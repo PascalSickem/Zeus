@@ -1,0 +1,778 @@
+{
+ "name": "Zeus",
+ "voxel_scale": 0.021739130434782608,
+ "palette_names": {
+  "1": "Skin",
+  "2": "SkinShade",
+  "3": "SkinLight",
+  "4": "Hair",
+  "5": "HairShade",
+  "6": "Cloth",
+  "7": "ClothShade",
+  "8": "Gold",
+  "9": "GoldDark",
+  "10": "GoldLight",
+  "11": "Cape",
+  "12": "CapeDark",
+  "13": "CapeInner",
+  "14": "Leather",
+  "15": "Eye",
+  "16": "EyeCore",
+  "17": "Bolt",
+  "18": "BoltCore",
+  "19": "Electric",
+  "20": "ElectricCore",
+  "21": "Mouth",
+  "22": "Gem",
+  "23": "Storm"
+ },
+ "emissive_indices": [
+  15,
+  16,
+  17,
+  18,
+  19,
+  20,
+  22,
+  23
+ ],
+ "bones": [
+  {
+   "name": "Root",
+   "parent": null,
+   "pivot": [
+    0,
+    0,
+    0
+   ]
+  },
+  {
+   "name": "Pelvis",
+   "parent": "Root",
+   "pivot": [
+    0,
+    13,
+    0
+   ]
+  },
+  {
+   "name": "Spine1",
+   "parent": "Pelvis",
+   "pivot": [
+    0,
+    16,
+    0
+   ]
+  },
+  {
+   "name": "Spine2",
+   "parent": "Spine1",
+   "pivot": [
+    0,
+    20,
+    0
+   ]
+  },
+  {
+   "name": "Neck",
+   "parent": "Spine2",
+   "pivot": [
+    0,
+    27,
+    0
+   ]
+  },
+  {
+   "name": "Head",
+   "parent": "Neck",
+   "pivot": [
+    0,
+    28,
+    0
+   ]
+  },
+  {
+   "name": "Jaw",
+   "parent": "Head",
+   "pivot": [
+    0,
+    30,
+    5
+   ]
+  },
+  {
+   "name": "HairBack",
+   "parent": "Head",
+   "pivot": [
+    0,
+    38,
+    -7
+   ]
+  },
+  {
+   "name": "R_Shoulder",
+   "parent": "Spine2",
+   "pivot": [
+    -9.5,
+    25,
+    0
+   ]
+  },
+  {
+   "name": "R_Elbow",
+   "parent": "R_Shoulder",
+   "pivot": [
+    -9.5,
+    20,
+    0
+   ]
+  },
+  {
+   "name": "R_Hand",
+   "parent": "R_Elbow",
+   "pivot": [
+    -9.5,
+    15,
+    0
+   ]
+  },
+  {
+   "name": "R_Weapon",
+   "parent": "R_Hand",
+   "pivot": [
+    -9.5,
+    13,
+    0.5
+   ]
+  },
+  {
+   "name": "L_Shoulder",
+   "parent": "Spine2",
+   "pivot": [
+    9.5,
+    25,
+    0
+   ]
+  },
+  {
+   "name": "L_Elbow",
+   "parent": "L_Shoulder",
+   "pivot": [
+    9.5,
+    20,
+    0
+   ]
+  },
+  {
+   "name": "L_Hand",
+   "parent": "L_Elbow",
+   "pivot": [
+    9.5,
+    15,
+    0
+   ]
+  },
+  {
+   "name": "R_Hip",
+   "parent": "Pelvis",
+   "pivot": [
+    -3.5,
+    12,
+    0
+   ]
+  },
+  {
+   "name": "R_Knee",
+   "parent": "R_Hip",
+   "pivot": [
+    -3.5,
+    7.5,
+    0
+   ]
+  },
+  {
+   "name": "R_Foot",
+   "parent": "R_Knee",
+   "pivot": [
+    -3.5,
+    3,
+    0
+   ]
+  },
+  {
+   "name": "L_Hip",
+   "parent": "Pelvis",
+   "pivot": [
+    3.5,
+    12,
+    0
+   ]
+  },
+  {
+   "name": "L_Knee",
+   "parent": "L_Hip",
+   "pivot": [
+    3.5,
+    7.5,
+    0
+   ]
+  },
+  {
+   "name": "L_Foot",
+   "parent": "L_Knee",
+   "pivot": [
+    3.5,
+    3,
+    0
+   ]
+  },
+  {
+   "name": "Skirt_F",
+   "parent": "Pelvis",
+   "pivot": [
+    0,
+    12,
+    2
+   ]
+  },
+  {
+   "name": "Skirt_B",
+   "parent": "Pelvis",
+   "pivot": [
+    0,
+    12,
+    -2
+   ]
+  },
+  {
+   "name": "Cape1",
+   "parent": "Spine2",
+   "pivot": [
+    0,
+    27,
+    -5
+   ]
+  },
+  {
+   "name": "Cape2",
+   "parent": "Cape1",
+   "pivot": [
+    0,
+    18,
+    -5.5
+   ]
+  },
+  {
+   "name": "Cape3",
+   "parent": "Cape2",
+   "pivot": [
+    0,
+    11,
+    -6
+   ]
+  },
+  {
+   "name": "R_Spark",
+   "parent": "R_Weapon",
+   "pivot": [
+    -9.5,
+    13,
+    8
+   ],
+   "rest_scale": 0.0001
+  },
+  {
+   "name": "L_Spark",
+   "parent": "L_Hand",
+   "pivot": [
+    9.5,
+    12.5,
+    0.5
+   ],
+   "rest_scale": 0.0001
+  },
+  {
+   "name": "FX_Chain1",
+   "parent": "L_Hand",
+   "pivot": [
+    9.5,
+    11,
+    0.5
+   ],
+   "rest_scale": 0.0001
+  },
+  {
+   "name": "FX_Chain2",
+   "parent": "FX_Chain1",
+   "pivot": [
+    9.5,
+    -4,
+    0.5
+   ],
+   "rest_scale": 0.0001
+  },
+  {
+   "name": "FX_Chain3",
+   "parent": "FX_Chain2",
+   "pivot": [
+    9.5,
+    -19,
+    0.5
+   ],
+   "rest_scale": 0.0001
+  },
+  {
+   "name": "FX_Proj",
+   "parent": "Root",
+   "pivot": [
+    0,
+    24,
+    0
+   ],
+   "rest_scale": 0.0001,
+   "rest_pivot": [
+    0,
+    24,
+    0
+   ]
+  },
+  {
+   "name": "FX_Ring",
+   "parent": "Root",
+   "pivot": [
+    0,
+    14,
+    0
+   ],
+   "rest_scale": 0.0001,
+   "rest_pivot": [
+    0,
+    24,
+    0
+   ]
+  },
+  {
+   "name": "FX_Ring2",
+   "parent": "Root",
+   "pivot": [
+    0,
+    30,
+    0
+   ],
+   "rest_scale": 0.0001,
+   "rest_pivot": [
+    0,
+    24,
+    0
+   ]
+  },
+  {
+   "name": "FX_Strike",
+   "parent": "Root",
+   "pivot": [
+    0,
+    64,
+    0
+   ],
+   "rest_scale": 0.0001,
+   "rest_pivot": [
+    0,
+    24,
+    0
+   ]
+  },
+  {
+   "name": "FX_SkyBolt",
+   "parent": "Root",
+   "pivot": [
+    0,
+    70,
+    18
+   ],
+   "rest_scale": 0.0001,
+   "rest_pivot": [
+    0,
+    24,
+    0
+   ]
+  },
+  {
+   "name": "FX_Impact",
+   "parent": "Root",
+   "pivot": [
+    0,
+    0,
+    18
+   ],
+   "rest_scale": 0.0001,
+   "rest_pivot": [
+    0,
+    24,
+    0
+   ]
+  },
+  {
+   "name": "FX_BoltTip",
+   "parent": "R_Weapon",
+   "pivot": [
+    -9.5,
+    13,
+    16
+   ]
+  },
+  {
+   "name": "FX_Chest",
+   "parent": "Spine2",
+   "pivot": [
+    0,
+    23,
+    5
+   ]
+  },
+  {
+   "name": "FX_Overhead",
+   "parent": "Root",
+   "pivot": [
+    0,
+    50,
+    0
+   ]
+  },
+  {
+   "name": "FX_Ground",
+   "parent": "Root",
+   "pivot": [
+    0,
+    0,
+    0
+   ]
+  }
+ ],
+ "parts": [
+  {
+   "bone": "Head",
+   "file": "parts/Head.vox",
+   "anchor": [
+    -10,
+    28,
+    8
+   ]
+  },
+  {
+   "bone": "Jaw",
+   "file": "parts/Jaw.vox",
+   "anchor": [
+    -9,
+    23,
+    8
+   ]
+  },
+  {
+   "bone": "HairBack",
+   "file": "parts/HairBack.vox",
+   "anchor": [
+    -7,
+    24,
+    -8
+   ]
+  },
+  {
+   "bone": "Neck",
+   "file": "parts/Neck.vox",
+   "anchor": [
+    -3,
+    26,
+    1
+   ]
+  },
+  {
+   "bone": "Spine2",
+   "file": "parts/Spine2.vox",
+   "anchor": [
+    -7,
+    20,
+    5
+   ]
+  },
+  {
+   "bone": "Spine1",
+   "file": "parts/Spine1.vox",
+   "anchor": [
+    -7,
+    16,
+    3
+   ]
+  },
+  {
+   "bone": "Pelvis",
+   "file": "parts/Pelvis.vox",
+   "anchor": [
+    -7,
+    12,
+    5
+   ]
+  },
+  {
+   "bone": "Skirt_F",
+   "file": "parts/Skirt_F.vox",
+   "anchor": [
+    -9,
+    5,
+    5
+   ]
+  },
+  {
+   "bone": "Skirt_B",
+   "file": "parts/Skirt_B.vox",
+   "anchor": [
+    -9,
+    5,
+    -1
+   ]
+  },
+  {
+   "bone": "R_Shoulder",
+   "file": "parts/R_Shoulder.vox",
+   "anchor": [
+    -13,
+    19,
+    1
+   ]
+  },
+  {
+   "bone": "R_Elbow",
+   "file": "parts/R_Elbow.vox",
+   "anchor": [
+    -12,
+    15,
+    1
+   ]
+  },
+  {
+   "bone": "R_Hand",
+   "file": "parts/R_Hand.vox",
+   "anchor": [
+    -12,
+    11,
+    2
+   ]
+  },
+  {
+   "bone": "L_Shoulder",
+   "file": "parts/L_Shoulder.vox",
+   "anchor": [
+    6,
+    19,
+    2
+   ]
+  },
+  {
+   "bone": "L_Elbow",
+   "file": "parts/L_Elbow.vox",
+   "anchor": [
+    7,
+    15,
+    1
+   ]
+  },
+  {
+   "bone": "L_Hand",
+   "file": "parts/L_Hand.vox",
+   "anchor": [
+    7,
+    11,
+    2
+   ]
+  },
+  {
+   "bone": "R_Hip",
+   "file": "parts/R_Hip.vox",
+   "anchor": [
+    -6,
+    7,
+    1
+   ]
+  },
+  {
+   "bone": "R_Knee",
+   "file": "parts/R_Knee.vox",
+   "anchor": [
+    -6,
+    3,
+    1
+   ]
+  },
+  {
+   "bone": "R_Foot",
+   "file": "parts/R_Foot.vox",
+   "anchor": [
+    -6,
+    0,
+    4
+   ]
+  },
+  {
+   "bone": "L_Hip",
+   "file": "parts/L_Hip.vox",
+   "anchor": [
+    1,
+    7,
+    1
+   ]
+  },
+  {
+   "bone": "L_Knee",
+   "file": "parts/L_Knee.vox",
+   "anchor": [
+    1,
+    3,
+    1
+   ]
+  },
+  {
+   "bone": "L_Foot",
+   "file": "parts/L_Foot.vox",
+   "anchor": [
+    1,
+    0,
+    4
+   ]
+  },
+  {
+   "bone": "Cape1",
+   "file": "parts/Cape1.vox",
+   "anchor": [
+    -9,
+    18,
+    -5
+   ]
+  },
+  {
+   "bone": "Cape2",
+   "file": "parts/Cape2.vox",
+   "anchor": [
+    -9,
+    11,
+    -5
+   ]
+  },
+  {
+   "bone": "Cape3",
+   "file": "parts/Cape3.vox",
+   "anchor": [
+    -10,
+    3,
+    -5
+   ]
+  },
+  {
+   "bone": "R_Weapon",
+   "file": "parts/R_Weapon.vox",
+   "anchor": [
+    -13,
+    12,
+    18
+   ]
+  },
+  {
+   "bone": "R_Spark",
+   "file": "parts/R_Spark.vox",
+   "anchor": [
+    -15,
+    7,
+    12
+   ]
+  },
+  {
+   "bone": "L_Spark",
+   "file": "parts/L_Spark.vox",
+   "anchor": [
+    3,
+    7,
+    3
+   ]
+  },
+  {
+   "bone": "FX_Chain1",
+   "file": "parts/FX_Chain1.vox",
+   "anchor": [
+    7,
+    -6,
+    3
+   ]
+  },
+  {
+   "bone": "FX_Chain2",
+   "file": "parts/FX_Chain2.vox",
+   "anchor": [
+    6,
+    -21,
+    4
+   ]
+  },
+  {
+   "bone": "FX_Chain3",
+   "file": "parts/FX_Chain3.vox",
+   "anchor": [
+    3,
+    -40,
+    3
+   ]
+  },
+  {
+   "bone": "FX_Proj",
+   "file": "parts/FX_Proj.vox",
+   "anchor": [
+    -4,
+    21,
+    19
+   ]
+  },
+  {
+   "bone": "FX_Ring",
+   "file": "parts/FX_Ring.vox",
+   "anchor": [
+    -15,
+    11,
+    15
+   ]
+  },
+  {
+   "bone": "FX_Ring2",
+   "file": "parts/FX_Ring2.vox",
+   "anchor": [
+    -13,
+    27,
+    12
+   ]
+  },
+  {
+   "bone": "FX_Strike",
+   "file": "parts/FX_Strike.vox",
+   "anchor": [
+    -7,
+    -2,
+    5
+   ]
+  },
+  {
+   "bone": "FX_SkyBolt",
+   "file": "parts/FX_SkyBolt.vox",
+   "anchor": [
+    -12,
+    -1,
+    25
+   ]
+  },
+  {
+   "bone": "FX_Impact",
+   "file": "parts/FX_Impact.vox",
+   "anchor": [
+    -15,
+    -1,
+    32
+   ]
+  }
+ ],
+ "animations": "anims.py"
+}

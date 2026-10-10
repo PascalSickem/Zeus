@@ -1,12 +1,89 @@
 # Zeus: custom character for Esports Godfather
 
-ZeusLab is a C# mod (`lab/step7/MyModScript.cs`) that loads rigged 3D models
-in the **KAIR** format and previews them in-game (`RealModelLab`). This repo
-adds an original Zeus character and a tool pipeline. With it, any model made
-in Blender (or another glTF tool) reaches the game with correct orientation,
-scale, skinning and 30 FPS animation.
+Zeus is a storm mage. He is an original **voxel** hero built to match Esports
+Godfather's native style: chunky voxels, chibi proportions, a strong
+silhouette. His lightning kit is built into the model as animated effects.
 
-![Zeus blockout poses: Idle, Attack, Q, R](docs/zeus_blockout_poses.png)
+![Zeus from the game camera](docs/zeus_voxel_game.png)
+
+## Quick start
+
+```
+python3 tools/build_zeus.py
+```
+
+That builds everything into `build/`:
+- `build/ImportedModels/Zeus/`: the lab folder (`model.bin.gz`, `Zeus_Palette.png`, `materials.txt`)
+- `build/zeus_preview_front.png` and `build/zeus_preview_game.png`: every clip, rendered offline
+- `build/zeus_voxel.glb`: rig plus animations, which you can open in Blender
+
+To install, put that `Zeus` folder next to `lab/step7/INSTALL_STEP7_CLEAN_MODEL_PASS.cmd`
+and run the installer. In the game's ZeusLab panel, click **Zeus Prototype**.
+
+## Editing Zeus (MagicaVoxel, no rigging needed)
+
+The source is `zeus/`:
+
+| File | What it is |
+|---|---|
+| `zeus/parts/<Bone>.vox` | One MagicaVoxel model per bone (Head, Jaw, Spine2, R_Elbow, ...) |
+| `zeus/rig.json` | Bone pivots, where each part sits, which palette slots glow |
+| `zeus/anims.py` | All animation clips and the lightning FX timing |
+
+1. Open `zeus/parts/Head.vox` (or any part) in [MagicaVoxel](https://ephtracy.github.io/), edit it and save.
+   - Parts open upright and un-mirrored. The part is placed by its `anchor` in
+     `rig.json`, and resizing the model in MagicaVoxel keeps existing voxels in place.
+     If a part ever shifts after an edit, nudge its `anchor` ([x, y, z] in voxels).
+   - Palette slots 15–20 and 22–23 are **emissive**: eyes, lightning and gems stay
+     at full brightness. Recolor freely, but keep glow colors in those slots.
+2. Run `python3 tools/build_zeus.py` and check the preview PNGs.
+3. Re-run the installer.
+
+Each part is rigidly attached to its bone, the same way the game's own voxel
+heroes are animated, so you never paint weights.
+`tools/seed_zeus_voxels.py --force` regenerates the original parts, which
+**overwrites your edits**.
+
+### The kit (clip names follow the lab's existing convention)
+
+| Clip | Move | What happens |
+|---|---|---|
+| Idle | — | Hovering stance, bolt raised, sparks crackling on the bolt and left hand |
+| Run | — | Run cycle, cape and mane streaming |
+| Attack | **Lightning Bolt** | Winds up and hurls the bolt (projectile), then a new one sparks into his hand |
+| Q | **Chain Lightning** | Turns side-on, and an arc leaps from his left hand through 3 targets with a burst on the last |
+| W | **Static Aegis** | Arms to the sky, and two electric rings spin up around him |
+| E | **Thunder Step** | Crouches, lightning strikes him, he vanishes, then is struck again and re-forms |
+| R | **Wrath of Olympus** | Levitates, gathers a storm ring overhead, slams. A sky bolt strikes ahead and the ground explodes |
+| Taunt | — | Booming laugh with lightning dancing on the raised bolt |
+| Death | — | Sparks die out and he collapses |
+
+The FX bones are hidden at rest (scale ≈ 0, parked inside the body), so they
+never affect the lab camera's framing. Attach points for in-game VFX are
+`FX_BoltTip`, `FX_Chest`, `FX_Overhead` and `FX_Ground`.
+
+### Bake notes
+
+The lab renders with `Unlit/Texture`, so lighting is **baked** into
+`Zeus_Palette.png`:
+- each color has 16 brightness rows
+- every voxel face picks a row from its direction (top bright, bottom dark)
+- ambient occlusion from neighboring voxels darkens creases
+- faces are greedy-meshed: about 6.5k triangles for the body and 14.7k for all FX
+
+If the real game renderer is lit, set the shading in `tools/voxel.py` (`DIRS`)
+to 1.0 so lighting isn't applied twice.
+
+## Tools
+
+| Tool | Purpose |
+|---|---|
+| `tools/build_zeus.py` | Runs everything: voxel → glb → KAIR → previews |
+| `tools/voxel_build.py` | `rig.json` + `.vox` + `anims.py` → rigged, animated `.glb` |
+| `tools/gltf_to_kair.py` | Any rigged `.glb` (Blender, Mixamo, ...) → KAIR lab folder |
+| `tools/kair.py inspect` | Validates a KAIR model |
+| `tools/kair_preview.py` | Offline renders; `--pitch 30 --yaw -30` gives the game camera |
+| `tools/make_zeus_blockout.py` | The earlier smooth (non-voxel) Zeus, kept for reference |
 
 ## What was wrong with the Step 7 Zeus prototype
 
@@ -20,9 +97,9 @@ scale, skinning and 30 FPS animation.
 
 So the prototype was never a Zeus model. It was box primitives driven by a
 League of Legends rig. That explains why it looked janky, and it means it
-can't ship as an original character. The original blockout below replaces it.
+can't ship as an original character. The voxel Zeus above replaces it.
 
-## The pipeline
+## glTF pipeline (Blender / Mixamo models)
 
 ```
 Blender / any DCC ──export .glb──► tools/gltf_to_kair.py ──► ImportedModels/Zeus/
@@ -44,43 +121,6 @@ The converter handles these conversions:
 - rigid props parented to bones (e.g. a weapon on the hand)
 - `--height` rescaling
 - writing `materials.txt` so each mesh gets its texture
-
-### Rebuild the original Zeus blockout
-
-```
-python3 tools/make_zeus_blockout.py build/zeus_blockout.glb
-python3 tools/gltf_to_kair.py build/zeus_blockout.glb build/ImportedModels/Zeus --height 1.0
-python3 tools/kair_preview.py build/ImportedModels/Zeus build/zeus_sheet.png
-```
-
-To install it, copy `build/ImportedModels/Zeus` next to
-`INSTALL_STEP7_CLEAN_MODEL_PASS.cmd` as a folder named `Zeus` and run the
-installer. The installer now uses that folder instead of the old prototype.
-
-### Zeus blockout spec (match this when making the final model)
-
-- **Rig (30 bones):** Root, Pelvis, Spine1-2, Neck, Head, Jaw, Shoulder/Elbow/Hand ×2, R_Weapon,
-  Hip/Knee/Foot ×2, Skirt_F/B, Cape1-3, HairBack, plus FX attach points
-  (FX_BoltTip, FX_Chest, FX_Overhead, FX_Ground). The rest pose has identity rotations.
-- **Clips:** Idle 2.4s loop, Run 0.6s loop, Attack 1.0s (release at 0.48s), Q 1.0s,
-  W 1.0s, E 1.0s, R 1.6s (impact at 1.15s), Taunt 2.0s, Death 1.6s.
-- **Scale:** 1.0 unit tall, faces +Z, the same framing as the other lab models.
-- **Materials:** Skin, Hair, Cloth, Gold, Leather, Cape, CapeInner, Eyes, Bolt, BoltCore.
-  These are toon "matcap" textures because the lab renders with `Unlit/Texture`.
-
-## Making the final, great-looking model
-
-The blockout is correct and animates cleanly, but it is built from primitives.
-To make it look great, do the following in Blender:
-
-1. Import `build/zeus_blockout.glb`. It brings in the rig, all clips and the proportions.
-2. Sculpt or model the real Zeus on top of it and skin it to the **same bones**,
-   then keep or polish the clips (the names must stay the same).
-3. Export as glTF Binary with *Include: Selected/Visible*, *+Y Up*, and
-   *Animation: Actions/NLA* enabled. Then run `gltf_to_kair.py`.
-
-Mixamo characters and animations also convert. Rename the clips with
-`--rename "Armature|mixamo.com|Layer0=Idle"`.
 
 ## Reference mod note
 

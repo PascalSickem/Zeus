@@ -40,9 +40,21 @@ def load_textures(folder, model):
     return tex
 
 
-def render(model, poses, textures, size=(300, 360), lit=False, bounds=None, bg=(5, 6, 14)):
+def view_rotate(sk, yaw=0.0, pitch=0.0):
+    """Orbit the camera: yaw around Y, then pitch down (top tilts toward camera)."""
+    if not yaw and not pitch:
+        return sk
+    cy, sy = np.cos(np.radians(yaw)), np.sin(np.radians(yaw))
+    cp, sp = np.cos(np.radians(pitch)), np.sin(np.radians(pitch))
+    Ry = np.array([[cy, 0, sy], [0, 1, 0], [-sy, 0, cy]])
+    Rx = np.array([[1, 0, 0], [0, cp, -sp], [0, sp, cp]])
+    R = Rx @ Ry
+    return [(m, p @ R.T, n @ R.T) for m, p, n in sk]
+
+
+def render(model, poses, textures, size=(300, 360), lit=False, bounds=None, bg=(5, 6, 14), yaw=0.0, pitch=0.0):
     W, H = size
-    sk = kair.skin(model, poses)
+    sk = view_rotate(kair.skin(model, poses), yaw, pitch)
     if bounds is None:
         allp = np.concatenate([p for m, p, _ in sk if len(p) > 3])
         lo, hi = allp.min(0), allp.max(0)
@@ -110,7 +122,7 @@ def render(model, poses, textures, size=(300, 360), lit=False, bounds=None, bg=(
     return Image.fromarray((np.clip(color, 0, 1) * 255).astype(np.uint8))
 
 
-def contact_sheet(folder, out, clips=None, frames=6, size=220, lit=False):
+def contact_sheet(folder, out, clips=None, frames=6, size=220, lit=False, yaw=0.0, pitch=0.0):
     model = kair.load(os.path.join(folder, "model.bin.gz"))
     tex = load_textures(folder, model)
     names = clips or list(model.clips)
@@ -120,19 +132,19 @@ def contact_sheet(folder, out, clips=None, frames=6, size=220, lit=False):
     d = ImageDraw.Draw(sheet)
 
     rest = kair.rest_poses(model)
-    allp = np.concatenate([p for m, p, _ in kair.skin(model, rest) if len(p) > 3])
+    allp = np.concatenate([p for m, p, _ in view_rotate(kair.skin(model, rest), yaw, pitch) if len(p) > 3])
     lo, hi = allp.min(0), allp.max(0)
     pad = (hi - lo) * 0.25
     bounds = (lo - pad, hi + pad)
 
-    sheet.paste(render(model, rest, tex, (W, H), lit, bounds), (label_w, 0))
+    sheet.paste(render(model, rest, tex, (W, H), lit, bounds, yaw=yaw, pitch=pitch), (label_w, 0))
     d.text((6, H // 2), "rest", fill=(230, 230, 230))
     for r, name in enumerate(names):
         fr = model.clips[name]
         d.text((6, H * (r + 1) + H // 2), "%s\n%d f" % (name, len(fr)), fill=(230, 230, 230))
         for c in range(frames):
             fi = int(round(c * (len(fr) - 1) / max(1, frames - 1)))
-            img = render(model, fr[fi], tex, (W, H), lit, bounds)
+            img = render(model, fr[fi], tex, (W, H), lit, bounds, yaw=yaw, pitch=pitch)
             sheet.paste(img, (label_w + c * W, H * (r + 1)))
     sheet.save(out)
     return out
@@ -146,8 +158,10 @@ def main():
     ap.add_argument("--frames", type=int, default=6)
     ap.add_argument("--size", type=int, default=220)
     ap.add_argument("--lit", action="store_true")
+    ap.add_argument("--yaw", type=float, default=0.0, help="orbit camera around the model (degrees)")
+    ap.add_argument("--pitch", type=float, default=0.0, help="look down from above (game camera ~30)")
     a = ap.parse_args()
-    contact_sheet(a.folder, a.out, a.clips.split(",") if a.clips else None, a.frames, a.size, a.lit)
+    contact_sheet(a.folder, a.out, a.clips.split(",") if a.clips else None, a.frames, a.size, a.lit, a.yaw, a.pitch)
     print("wrote", a.out)
 
 
