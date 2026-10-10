@@ -1,0 +1,7 @@
+# Model binaries derived from third-party assets stay local (see README).
+*.bin.gz
+ImportedModels/
+build/
+bin/
+obj/
+__pycache__/
