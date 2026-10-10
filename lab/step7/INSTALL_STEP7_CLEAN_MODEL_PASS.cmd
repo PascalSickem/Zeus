@@ -35,7 +35,13 @@ if errorlevel 1 (
     exit /b 1
 )
 
-if exist "%~dp0ZeusPrototype.model-rigged.bin.gz" (
+rem Original Zeus (tools/gltf_to_kair.py output: model + textures + materials.txt)
+rem takes priority over the old Janna-rig prototype.
+if exist "%~dp0Zeus\model.bin.gz" (
+    if exist "%WORK%\ImportedModels\Zeus" rmdir /S /Q "%WORK%\ImportedModels\Zeus"
+    xcopy "%~dp0Zeus" "%WORK%\ImportedModels\Zeus\" /E /I /Y >nul
+    echo [OK] Zeus / original model folder
+) else if exist "%~dp0ZeusPrototype.model-rigged.bin.gz" (
     if not exist "%WORK%\ImportedModels\Zeus" mkdir "%WORK%\ImportedModels\Zeus"
     copy /Y "%~dp0ZeusPrototype.model-rigged.bin.gz" "%WORK%\ImportedModels\Zeus\model.bin.gz" >nul
 )
